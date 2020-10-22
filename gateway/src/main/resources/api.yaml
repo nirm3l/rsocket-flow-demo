@@ -1,0 +1,13 @@
+openapi: "3.0.0"
+info:
+  description: "Flow Demo Gateway API"
+  version: "0.0.1"
+  title: "Flow Demo Gateway Service"
+servers:
+  - url: http://localhost:8082/
+    description: "local host"
+paths: {}
+components:
+  schemas:
+    User:
+      $ref: '../../../../user-service/src/main/resources/api.yaml#/components/schemas/User'

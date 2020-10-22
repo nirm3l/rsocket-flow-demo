@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: task-service
+
+  cloud:
+    config:
+      failFast: true
+
+server:
+  port: 8092

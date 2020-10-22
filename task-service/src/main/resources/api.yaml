@@ -1,0 +1,41 @@
+openapi: "3.0.0"
+info:
+  description: "Task API"
+  version: "0.0.1"
+  title: "Task Service"
+servers:
+  - url: http://localhost:8082/
+    description: "local host"
+tags:
+  - name: "Task"
+    description: "Task tag"
+paths:
+  /tasks:
+    get:
+      tags:
+        - "task"
+      summary: "Get tasks"
+      operationId: "getTasks"
+      responses:
+        200:
+          description: "Returns list of tasks"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: '#/components/schemas/Task'
+components:
+  schemas:
+    Task:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+          example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+        name:
+          type: "string"
+          example: "Demo"
+        createdBy:
+          $ref: '../../../../user-service/src/main/resources/api.yaml#/components/schemas/User'

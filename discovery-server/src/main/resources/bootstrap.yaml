@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: discovery-server
+
+  cloud:
+    config:
+      failFast: true
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false

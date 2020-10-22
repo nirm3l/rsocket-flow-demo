@@ -1,0 +1,143 @@
+openapi: "3.0.0"
+info:
+  description: "User Service API"
+  version: "0.0.1"
+  title: "User Service"
+servers:
+  - url: http://localhost:8093/
+    description: "local host"
+tags:
+  - name: "User"
+    description: "User tag"
+paths:
+  /users/{relatedUserId}:
+    parameters:
+      - name: "relatedUserId"
+        in: "path"
+        description: "get user by relatedUserId"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+    get:
+      tags:
+        - "user"
+      summary: "Get user"
+      operationId: "getUser"
+      responses:
+        200:
+          description: "Retrieves user by userId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      tags:
+        - "user"
+      summary: "Delete user"
+      operationId: "deleteUser"
+      responses:
+        200:
+          description: "Delete user by userId"
+    patch:
+      tags:
+        - "user"
+      summary: "Update user"
+      operationId: "updateUser"
+      requestBody:
+        description: "Update user"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: "User updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /users:
+    get:
+      tags:
+        - "user"
+      summary: "Get users"
+      operationId: "getUsers"
+      parameters:
+        - name: "onlyActive"
+          in: "query"
+          required: false
+          schema:
+            type: "boolean"
+            default: "false"
+        - name: "ids"
+          in: "query"
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
+              format: "uuid"
+              example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+      responses:
+        200:
+          description: "Get all users"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      tags:
+        - "user"
+      summary: "Create user"
+      operationId: "createUser"
+      requestBody:
+        description: "Create user"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: "User created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+components:
+  schemas:
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+          example: "cb9f6b1a-45f6-366c-8b57-4bda48017901"
+        email:
+          type: "string"
+          format: "email"
+          example: "john.doe@demo.com"
+        name:
+          type: "string"
+          example: "John Doe"
+          pattern: "^[A-Z][a-zA-Z]{3,}(?: [A-Z][a-zA-Z]*){0,2}$"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+        updatedBy:
+          type: "string"
+          format: "UUID"
+        status:
+          type: "string"
+          enum:
+            - ACTIVE
+            - INACTIVE

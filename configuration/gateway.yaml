@@ -1,0 +1,4 @@
+application.url: localhost:8080
+
+logging.file.name: "gateway.log"
+management.endpoint.logfile.external_file: "gateway.log"

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: user-service
+
+  cloud:
+    config:
+      failFast: true
+
+server:
+  port: 8093

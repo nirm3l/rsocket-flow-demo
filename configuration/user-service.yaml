@@ -1,0 +1,4 @@
+application.url: localhost/
+
+logging.file.name: "user-service.log"
+management.endpoint.logfile.external_file: "user-service.log"

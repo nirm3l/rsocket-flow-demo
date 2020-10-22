@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: admin
+
+  cloud:
+    config:
+      failFast: true
+
+  boot:
+    admin:
+      context-path: /admin
+server:
+  port: 8085
