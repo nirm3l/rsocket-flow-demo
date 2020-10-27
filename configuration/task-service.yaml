@@ -1,4 +1,2 @@
-application.url: localhost/
-
 logging.file.name: "task-service.log"
 management.endpoint.logfile.external_file: "task-service.log"

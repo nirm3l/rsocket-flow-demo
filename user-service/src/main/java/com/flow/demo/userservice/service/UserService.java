@@ -81,6 +81,10 @@ public class UserService {
             user.setId(UUID.randomUUID());
             user.setCreatedAt(OffsetDateTime.now());
 
+            if(user.getStatus() == null) {
+                user.setStatus(User.StatusEnum.ACTIVE);
+            }
+
             users.put(user.getId(), user);
 
             return user;

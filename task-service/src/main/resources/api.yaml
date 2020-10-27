@@ -25,6 +25,27 @@ paths:
                 type: "array"
                 items:
                   $ref: '#/components/schemas/Task'
+  /tasks/{taskId}:
+    parameters:
+      - name: "taskId"
+        in: "path"
+        description: "get task by task id"
+        required: true
+        schema:
+          type: "string"
+          format: "uuid"
+    get:
+      tags:
+        - "task"
+      summary: "Get task"
+      operationId: "getTask"
+      responses:
+        200:
+          description: "Retrieves task by taskId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
 components:
   schemas:
     Task:

@@ -31,7 +31,7 @@ public class OpenApiValidationFilter implements GlobalFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenApiValidationFilter.class);
 
-    private Map<String, OpenApiInteractionValidator> validatorsMap = new ConcurrentHashMap<>();
+    private final Map<String, OpenApiInteractionValidator> validatorsMap = new ConcurrentHashMap<>();
 
     private final Map<String, HttpStatus> statusMap = new HashMap<>();
 
@@ -74,7 +74,9 @@ public class OpenApiValidationFilter implements GlobalFilter {
                             exchange.getRequest(), body);
 
                     if(builder != null) {
-                        ValidationReport report = validateRequest(route.getId(), builder.build());
+                        SimpleRequest request = builder.build();
+
+                        ValidationReport report = validateRequest(route.getId(), request);
 
                         if (report.hasErrors()) {
                             return throwException(report.getMessages());
