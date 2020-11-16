@@ -114,6 +114,8 @@ components:
   schemas:
     User:
       type: "object"
+      required:
+        - email
       properties:
         id:
           type: "string"
@@ -123,6 +125,7 @@ components:
           type: "string"
           format: "email"
           example: "john.doe@demo.com"
+          nullable: false
         name:
           type: "string"
           example: "John Doe"

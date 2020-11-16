@@ -1,4 +1,4 @@
-FROM docker.apple.com/cpbase7/applejdk-11
+FROM adoptopenjdk/openjdk11:alpine-jre
 VOLUME /tmp
 ADD target/*.jar app.jar
 ENV JAVA_OPTS=""
