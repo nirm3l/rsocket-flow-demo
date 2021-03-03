@@ -3,11 +3,7 @@ spring:
     name: broker
 
   config:
-    import: configserver:http://localhost:8888
-
-  cloud:
-    config:
-      fail-fast: true
+    import: "configserver:"
 
 io.rsocket.routing.broker:
   tcp.port: 8002
@@ -24,6 +20,27 @@ io.rsocket.routing.broker:
         port: 7004
       proxy.tcp:
         host: localhost
+        port: 8004
+
+
+---
+spring.config.activate.on-profile: docker
+
+io.rsocket.routing.broker:
+  tcp.port: 8002
+  cluster.tcp.port: 7002
+  brokers:
+    - cluster.tcp:
+        host: broker2
+        port: 7003
+      proxy.tcp:
+        host: broker2
+        port: 8003
+    - cluster.tcp:
+        host: broker3
+        port: 7004
+      proxy.tcp:
+        host: broker3
         port: 8004
 
 ---
@@ -48,6 +65,26 @@ io.rsocket.routing.broker:
         port: 8004
 
 ---
+spring.config.activate.on-profile: docker & broker2
+
+io.rsocket.routing.broker:
+  tcp.port: 8003
+  cluster.tcp:
+    port: 7003
+  brokers:
+    - cluster.tcp:
+        host: broker
+        port: 7002
+      proxy.tcp:
+        host: broker
+        port: 8002
+    - cluster.tcp:
+        host: broker3
+        port: 7004
+      proxy.tcp:
+        host: broker3
+        port: 8004
+---
 spring.config.activate.on-profile: broker3
 
 io.rsocket.routing.broker:
@@ -69,7 +106,22 @@ io.rsocket.routing.broker:
         port: 8003
 
 ---
-spring:
-  config:
-    activate.on-profile: docker
-    import: configserver:http://config-server:8888
+spring.config.activate.on-profile: docker & broker3
+
+io.rsocket.routing.broker:
+  tcp.port: 8004
+  cluster.tcp:
+    port: 7004
+  brokers:
+    - cluster.tcp:
+        host: broker
+        port: 7002
+      proxy.tcp:
+        host: broker
+        port: 8002
+    - cluster.tcp:
+        host: broker2
+        port: 7003
+      proxy.tcp:
+        host: broker2
+        port: 8003

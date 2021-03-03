@@ -3,7 +3,7 @@ spring:
     name: gateway
 
   config:
-    import: configserver:http://localhost:8888
+    import: "configserver:"
 
   cloud:
     config:
@@ -15,9 +15,3 @@ server:
   error:
     include-message: always
     include-binding-errors: always
-
----
-spring:
-  config:
-    activate.on-profile: docker
-    import: configserver:http://config-server:8888
