@@ -150,6 +150,28 @@
 							</resources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-notification-service</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/notification-service/src/main/resources</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../notification-service/src/main/resources</directory>
+									<includes>
+										<include>**/*.yaml</include>
+									</includes>
+									<excludes>
+										<exclude>bootstrap.yaml</exclude>
+									</excludes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
