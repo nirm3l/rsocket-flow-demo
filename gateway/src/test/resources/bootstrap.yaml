@@ -1,7 +1,0 @@
-application.url: localhost:8080
-
-spring:
-  cloud:
-    config:
-      enabled: false
-      failFast: false

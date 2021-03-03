@@ -5,5 +5,15 @@ spring:
   config:
     import: configserver:http://localhost:8888
 
+  cloud:
+    config:
+      fail-fast: true
+
 server:
   port: 8093
+
+---
+spring:
+  config:
+    activate.on-profile: docker
+    import: configserver:http://config-server:8888

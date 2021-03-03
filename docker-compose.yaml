@@ -5,71 +5,57 @@ services:
     volumes:
       - ./configuration:/var/configuration
     environment:
-      spring.cloud.config.uri: http://config-server:8888
-      spring.profiles.active: native
+      spring.profiles.active: native,docker
       spring.cloud.config.server.native.searchLocations: /var/configuration
     ports:
       - 8888:8888
   broker:
     image: flow.demo.com/broker:0.0.1-SNAPSHOT
     environment:
-      spring.cloud.config.uri: http://config-server:8888
+      spring.profiles.active: docker
     ports:
       - 7002:7002
       - 8002:8002
-    depends_on:
-      - config-server
+    restart: on-failure
   broker2:
     image: flow.demo.com/broker:0.0.1-SNAPSHOT
     environment:
-      spring.profiles.active: broker2
-      spring.cloud.config.uri: http://config-server:8888
+      spring.profiles.active: docker,broker2
     ports:
       - 7003:7003
       - 8003:8003
-    depends_on:
-      - config-server
+    restart: on-failure
   broker3:
     image: flow.demo.com/broker:0.0.1-SNAPSHOT
     environment:
-      spring.profiles.active: broker3
-      spring.cloud.config.uri: http://config-server:8888
+      spring.profiles.active: broker3,docker
     ports:
       - 7004:7004
       - 8004:8004
-    depends_on:
-      - config-server
+    restart: on-failure
   user-service:
     image: flow.demo.com/user-service:0.0.1-SNAPSHOT
     environment:
-      spring.cloud.config.uri: http://config-server:8888
-    depends_on:
-      - config-server
+      spring.profiles.active: docker
     ports:
       - 8093:8093
+    restart: on-failure
   task-service:
     image: flow.demo.com/task-service:0.0.1-SNAPSHOT
     environment:
-      spring.cloud.config.uri: http://config-server:8888
-    depends_on:
-      - config-server
+      spring.profiles.active: docker
     ports:
       - 8092:8092
+    restart: on-failure
   notification-service:
     image: flow.demo.com/notification-service:0.0.1-SNAPSHOT
     environment:
-      spring.cloud.config.uri: http://config-server:8888
-    depends_on:
-      - config-server
+      spring.profiles.active: docker
+    restart: on-failure
   gateway:
     image: flow.demo.com/gateway:0.0.1-SNAPSHOT
     environment:
-      spring.cloud.config.uri: http://config-server:8888
-    depends_on:
-      - config-server
-      - task-service
-      - user-service
-      - notification-service
-      - broker
+      spring.profiles.active: docker
     ports:
       - 8080:8080
+    restart: on-failure

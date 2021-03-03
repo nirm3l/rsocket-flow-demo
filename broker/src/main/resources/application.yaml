@@ -5,6 +5,10 @@ spring:
   config:
     import: configserver:http://localhost:8888
 
+  cloud:
+    config:
+      fail-fast: true
+
 io.rsocket.routing.broker:
   tcp.port: 8002
   cluster.tcp.port: 7002
@@ -63,3 +67,9 @@ io.rsocket.routing.broker:
       proxy.tcp:
         host: localhost
         port: 8003
+
+---
+spring:
+  config:
+    activate.on-profile: docker
+    import: configserver:http://config-server:8888

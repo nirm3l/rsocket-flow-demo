@@ -5,9 +5,19 @@ spring:
   config:
     import: configserver:http://localhost:8888
 
+  cloud:
+    config:
+      fail-fast: true
+
 server:
   port: 8080
 
   error:
     include-message: always
     include-binding-errors: always
+
+---
+spring:
+  config:
+    activate.on-profile: docker
+    import: configserver:http://config-server:8888
