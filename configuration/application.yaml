@@ -33,7 +33,7 @@ io.rsocket.routing.client:
   service-name: ${spring.application.name}
   brokers:
     - tcp:
-        host: broker1
+        host: broker
         port: 8002
     - tcp:
         host: broker2
