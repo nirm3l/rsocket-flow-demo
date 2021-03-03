@@ -1,0 +1,2 @@
+logging.file.name: "notification-service.log"
+management.endpoint.logfile.external_file: "notification-service.log"

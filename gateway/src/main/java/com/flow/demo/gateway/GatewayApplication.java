@@ -7,10 +7,15 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.codec.DecoderHttpMessageReader;
+import org.springframework.http.codec.EncoderHttpMessageWriter;
+import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableScheduling
 public class GatewayApplication {
 
 	public static void main(String[] args) {
@@ -36,7 +41,6 @@ public class GatewayApplication {
 						.filters(f -> f.rewritePath("/api/(?<segment>.*)", "/${segment}"))
 						.uri("lb://".concat(serviceName)));
 	}
-
 
 	@Bean(name = "loadBalancedWebClientBuilder")
 	@LoadBalanced

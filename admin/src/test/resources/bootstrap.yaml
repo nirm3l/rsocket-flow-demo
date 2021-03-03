@@ -1,9 +1,0 @@
-spring:
-  cloud:
-    config:
-      enabled: false
-      failFast: false
-
-eureka:
-  client:
-    enabled: false

@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: broker
+
+  config:
+    import: configserver:http://localhost:8888
+
+io.rsocket.routing.broker:
+  tcp.port: 8002
+  cluster.tcp.port: 7002
+  brokers:
+    - cluster.tcp:
+        host: localhost
+        port: 7003
+      proxy.tcp:
+        host: localhost
+        port: 8003
+    - cluster.tcp:
+        host: localhost
+        port: 7004
+      proxy.tcp:
+        host: localhost
+        port: 8004
+
+---
+spring.config.activate.on-profile: broker2
+
+io.rsocket.routing.broker:
+  tcp.port: 8003
+  cluster.tcp:
+    port: 7003
+  brokers:
+    - cluster.tcp:
+        host: localhost
+        port: 7002
+      proxy.tcp:
+        host: localhost
+        port: 8002
+    - cluster.tcp:
+        host: localhost
+        port: 7004
+      proxy.tcp:
+        host: localhost
+        port: 8004
+
+---
+spring.config.activate.on-profile: broker3
+
+io.rsocket.routing.broker:
+  tcp.port: 8004
+  cluster.tcp:
+    port: 7004
+  brokers:
+    - cluster.tcp:
+        host: localhost
+        port: 7002
+      proxy.tcp:
+        host: localhost
+        port: 8002
+    - cluster.tcp:
+        host: localhost
+        port: 7003
+      proxy.tcp:
+        host: localhost
+        port: 8003

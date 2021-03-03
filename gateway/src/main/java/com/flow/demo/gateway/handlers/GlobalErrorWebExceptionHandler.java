@@ -1,7 +1,8 @@
 package com.flow.demo.gateway.handlers;
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
@@ -16,9 +17,9 @@ import java.util.Map;
 @Order(-2)
 public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHandler {
     public GlobalErrorWebExceptionHandler(
-            ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
+            ErrorAttributes errorAttributes, WebProperties.Resources resources,
             ApplicationContext applicationContext, ServerCodecConfigurer configurer) {
-        super(errorAttributes, resourceProperties, applicationContext);
+        super(errorAttributes, resources, applicationContext);
 
         this.setMessageWriters(configurer.getWriters());
     }
@@ -31,7 +32,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
     private Mono<ServerResponse> doErrorRedirection(
             ServerRequest request) {
-        Map<String, Object> errorPropertiesMap = getErrorAttributes(request, false);
+        Map<String, Object> errorPropertiesMap = getErrorAttributes(request, ErrorAttributeOptions.of(
+                ErrorAttributeOptions.Include.MESSAGE));
 
         return ServerResponse.status(
                 (int)errorPropertiesMap.getOrDefault("status", 500))

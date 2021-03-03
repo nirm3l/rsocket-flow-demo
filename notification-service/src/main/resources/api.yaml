@@ -1,0 +1,68 @@
+openapi: "3.0.0"
+info:
+  description: "Notification API"
+  version: "0.0.1"
+  title: "Notification Service"
+servers:
+  - url: http://localhost:8082/
+    description: "local host"
+tags:
+  - name: "Notification"
+    description: "Notification tag"
+paths:
+  /fake:
+    options:
+      tags:
+        - "fake"
+      responses:
+        200:
+          description: "Fake response"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/NewTaskEvent'
+                  - $ref: '#/components/schemas/NotificationChannelEvent'
+components:
+  schemas:
+    NotificationChannelEvent:
+      type: string
+      enum:
+        - opened
+        - closed
+    BaseEvent:
+      type: "object"
+      required:
+        - type
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+          example: "cb9f6b1a-45f6-366c-8b57-4bda48017901"
+        eventType:
+          type: "string"
+      discriminator:
+        propertyName: "eventType"
+    UserEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: "object"
+          properties:
+            userId:
+              type: "string"
+              format: "uuid"
+              example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+    NewTaskEvent:
+      allOf:
+        - $ref: '#/components/schemas/UserEvent'
+        - type: "object"
+          properties:
+            task:
+              $ref: '../../../../task-service/src/main/resources/api.yaml#/components/schemas/Task'
+    TaskDeletedEvent:
+      allOf:
+        - $ref: '#/components/schemas/UserEvent'
+        - type: "object"
+          properties:
+            task:
+              $ref: '../../../../task-service/src/main/resources/api.yaml#/components/schemas/Task'

@@ -1,0 +1,6 @@
+logging.file.name: "broker.log"
+management.endpoint.logfile.external_file: "broker.log"
+
+logging:
+  level:
+    io.rsocket.routing.broker: DEBUG

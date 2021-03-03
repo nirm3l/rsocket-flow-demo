@@ -8,72 +8,68 @@ services:
       spring.cloud.config.uri: http://config-server:8888
       spring.profiles.active: native
       spring.cloud.config.server.native.searchLocations: /var/configuration
-      eureka.client.serviceUrl.defaultZone: http://discovery-server:8761/eureka
     ports:
       - 8888:8888
-    labels:
-      kompose.service.type: loadbalancer
-    restart: on-failure
-  discovery-server:
-    image: flow.demo.com/discovery-server:0.0.1-SNAPSHOT
+  broker:
+    image: flow.demo.com/broker:0.0.1-SNAPSHOT
     environment:
       spring.cloud.config.uri: http://config-server:8888
     ports:
-      - 8761:8761
-    restart: on-failure
+      - 7002:7002
+      - 8002:8002
     depends_on:
       - config-server
-    labels:
-      kompose.service.type: loadbalancer
+  broker2:
+    image: flow.demo.com/broker:0.0.1-SNAPSHOT
+    environment:
+      spring.profiles.active: broker2
+      spring.cloud.config.uri: http://config-server:8888
+    ports:
+      - 7003:7003
+      - 8003:8003
+    depends_on:
+      - config-server
+  broker3:
+    image: flow.demo.com/broker:0.0.1-SNAPSHOT
+    environment:
+      spring.profiles.active: broker3
+      spring.cloud.config.uri: http://config-server:8888
+    ports:
+      - 7004:7004
+      - 8004:8004
+    depends_on:
+      - config-server
   user-service:
     image: flow.demo.com/user-service:0.0.1-SNAPSHOT
     environment:
       spring.cloud.config.uri: http://config-server:8888
-      eureka.client.serviceUrl.defaultZone: http://discovery-server:8761/eureka
     depends_on:
       - config-server
     ports:
       - 8093:8093
-    restart: always
-    labels:
-      kompose.service.type: clusterip
   task-service:
     image: flow.demo.com/task-service:0.0.1-SNAPSHOT
     environment:
       spring.cloud.config.uri: http://config-server:8888
-      eureka.client.serviceUrl.defaultZone: http://discovery-server:8761/eureka
     depends_on:
       - config-server
     ports:
       - 8092:8092
-    restart: always
-    labels:
-      kompose.service.type: clusterip
+  notification-service:
+    image: flow.demo.com/notification-service:0.0.1-SNAPSHOT
+    environment:
+      spring.cloud.config.uri: http://config-server:8888
+    depends_on:
+      - config-server
   gateway:
     image: flow.demo.com/gateway:0.0.1-SNAPSHOT
     environment:
       spring.cloud.config.uri: http://config-server:8888
-      eureka.client.serviceUrl.defaultZone: http://discovery-server:8761/eureka
     depends_on:
       - config-server
       - task-service
       - user-service
+      - notification-service
+      - broker
     ports:
       - 8080:8080
-    restart: on-failure
-    labels:
-      kompose.service.type: loadbalancer
-  admin:
-    image: flow.demo.com/admin:0.0.1-SNAPSHOT
-    environment:
-      spring.cloud.config.uri: http://config-server:8888
-      eureka.client.serviceUrl.defaultZone: http://discovery-server:8761/eureka
-    depends_on:
-      - config-server
-    ports:
-      - 8085:8085
-    restart: on-failure
-    expose:
-      - 8085
-    labels:
-      kompose.service.type: loadbalancer

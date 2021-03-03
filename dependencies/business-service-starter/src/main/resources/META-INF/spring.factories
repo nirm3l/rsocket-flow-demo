@@ -1,0 +1,3 @@
+# Initializers
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    io.rsocket.routing.client.spring.RSocketConfig

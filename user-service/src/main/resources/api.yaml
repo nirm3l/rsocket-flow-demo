@@ -129,7 +129,6 @@ components:
         name:
           type: "string"
           example: "John Doe"
-          pattern: "^[A-Z][a-zA-Z]{3,}(?: [A-Z][a-zA-Z]*){0,2}$"
         createdAt:
           type: "string"
           format: "date-time"
@@ -144,3 +143,14 @@ components:
           enum:
             - ACTIVE
             - INACTIVE
+        settings:
+          $ref: "#/components/schemas/UserSettings"
+    UserSettings:
+      type: "object"
+      properties:
+        receiveNotifications:
+          type: "boolean"
+          default: true
+        language:
+          type: "string"
+          default: "en"

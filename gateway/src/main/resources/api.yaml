@@ -11,3 +11,19 @@ components:
   schemas:
     User:
       $ref: '../../../../user-service/src/main/resources/api.yaml#/components/schemas/User'
+    Task:
+      allOf:
+        - $ref: '../../../../task-service/src/main/resources/api.yaml#/components/schemas/Task'
+        - type: "object"
+          properties:
+            createdBy:
+              $ref: '#/components/schemas/User'
+    NewTaskEvent:
+      $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/NewTaskEvent'
+    TaskDeletedEvent:
+      $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/TaskDeletedEvent'
+    NotificationChannelEvent:
+      $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/NotificationChannelEvent'
+    PingEvent:
+      allOf:
+        - $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/BaseEvent'

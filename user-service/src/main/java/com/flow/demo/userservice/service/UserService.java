@@ -1,30 +1,21 @@
 package com.flow.demo.userservice.service;
 
+import com.fasterxml.uuid.Generators;
 import com.flow.demo.userservice.exceptions.UserAlreadyExistException;
 import com.flow.demo.userservice.exceptions.UserNotFoundException;
 import com.flow.demo.userservice.generated.model.User;
+import com.flow.demo.userservice.generated.model.UserSettings;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private final Map<UUID, User> users = new LinkedHashMap<>();
-
-    @PostConstruct
-    void init() {
-        User user1 = getUser("User1", "user1@demo.com");
-        User user2 = getUser("User2", "user2@demo.com");
-        User user3 = getUser("User3", "user3@demo.com", User.StatusEnum.INACTIVE);
-
-        users.put(user1.getId(), user1);
-        users.put(user2.getId(), user2);
-        users.put(user3.getId(), user3);
-    }
+    private final Map<UUID, User> users = new ConcurrentSkipListMap<>();
 
     public Collection<User> getUsers(Boolean onlyActive, List<UUID> uuids) {
         return users.values().stream().filter(user -> {
@@ -50,25 +41,14 @@ public class UserService {
         return u;
     }
 
-    private User getUser(String name, String email) {
-        return getUser(name, email, User.StatusEnum.ACTIVE);
-    }
+    public User deleteUser(UUID userId) {
+        User user = users.remove(userId);
 
-    private User getUser(String name, String email, User.StatusEnum status) {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setCreatedAt(OffsetDateTime.now());
-        user.setEmail(email);
-        user.setStatus(status);
-        user.setName(name);
-
-        return user;
-    }
-
-    public void deleteUser(UUID userId) {
-        if(users.remove(userId) == null) {
+        if(user == null) {
             throw new UserNotFoundException();
         }
+
+        return user;
     }
 
     public User createUser(User user) {
@@ -78,8 +58,9 @@ public class UserService {
         if(existing.isPresent()) {
             throw new UserAlreadyExistException();
         } else {
-            user.setId(UUID.randomUUID());
+            user.setId(Generators.timeBasedGenerator().generate());
             user.setCreatedAt(OffsetDateTime.now());
+            user.setSettings(new UserSettings());
 
             if(user.getStatus() == null) {
                 user.setStatus(User.StatusEnum.ACTIVE);

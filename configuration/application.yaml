@@ -12,7 +12,33 @@ management:
 logging:
   pattern:
     file: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+  level:
+    io.rsocket.routing.client: INFO
 
 spring:
   jackson:
     default-property-inclusion: NON_NULL
+
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            user-service[0]:
+              uri: http://localhost:8093
+            task-service[0]:
+              uri: http://localhost:8092
+
+io.rsocket.routing.client:
+  service-name: ${spring.application.name}
+  brokers:
+    - tcp:
+        host: localhost
+        port: 8002
+    - tcp:
+        host: localhost
+        port: 8003
+    - tcp:
+        host: localhost
+        port: 8004
+

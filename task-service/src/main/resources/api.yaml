@@ -25,6 +25,25 @@ paths:
                 type: "array"
                 items:
                   $ref: '#/components/schemas/Task'
+    post:
+      tags:
+        - "task"
+      summary: "Create task"
+      operationId: "createTask"
+      requestBody:
+        description: "Create task"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        201:
+          description: "Task created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
   /tasks/{taskId}:
     parameters:
       - name: "taskId"
@@ -46,6 +65,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+    delete:
+      tags:
+        - "task"
+      summary: "Delete task"
+      operationId: "deleteTask"
+      parameters:
+        - name: "taskId"
+          in: "path"
+          description: "get task by task id"
+          required: true
+          schema:
+            type: "string"
+            format: "uuid"
+      responses:
+        200:
+          description: "Retrieves deleted task"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
 components:
   schemas:
     Task:
@@ -58,5 +97,52 @@ components:
         name:
           type: "string"
           example: "Demo"
-        createdBy:
-          $ref: '../../../../user-service/src/main/resources/api.yaml#/components/schemas/User'
+        createdById:
+          type: "string"
+          format: "uuid"
+          example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+        tags:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Tag'
+        comments:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Comment'
+    Tag:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+          example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+        value:
+          type: "string"
+    Comment:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+          example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+        userId:
+          type: "string"
+          format: "uuid"
+          example: "5adae440-5616-44c6-a3d0-f9a2398217d6"
+        value:
+          type: "string"
+
+    NewTaskEvent:
+      allOf:
+        - $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/UserEvent'
+        - type: "object"
+          properties:
+            task:
+              $ref: '#/components/schemas/Task'
+    TaskDeletedEvent:
+      allOf:
+        - $ref: '../../../../notification-service/src/main/resources/api.yaml#/components/schemas/UserEvent'
+        - type: "object"
+          properties:
+            task:
+              $ref: '#/components/schemas/Task'
