@@ -1,9 +1,6 @@
 # RSocket Flow Demo   
 Welcome to the flow demo source code repository.      
       
-## Getting started   
-Project is based on microservice architecture by using [Spring Cloud stack](https://spring.io/projects/spring-cloud).    
-
 ## List of available microservices.     
 
 ### Task Service    
