@@ -3,7 +3,7 @@ spring:
     name: broker
 
   config:
-    import: "configserver:"
+    import: "configserver:http://config-server:8888"
 
 io.rsocket.routing.broker:
   tcp.port: 8002
