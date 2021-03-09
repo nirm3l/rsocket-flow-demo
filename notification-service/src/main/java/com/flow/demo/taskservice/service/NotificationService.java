@@ -18,44 +18,40 @@ public class NotificationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationService.class);
 
-    private final Map<UUID, Set<Sinks.Many<BaseEvent>>> userNotificationConnections = new ConcurrentHashMap<>();
+    private final Map<UUID, Sinks.Many<BaseEvent>> userNotificationConnections = new ConcurrentHashMap<>();
 
     public Flux<BaseEvent> handleNotifications(UUID userId, Flux<NotificationChannelEvent> events) {
         LOGGER.info("Connection added for user {}.", userId);
 
-        Sinks.Many<BaseEvent> replaySink = Sinks.many().unicast().onBackpressureBuffer();
-
         if (!userNotificationConnections.containsKey(userId)) {
-            userNotificationConnections.put(userId, new HashSet<>());
+            userNotificationConnections.put(userId, Sinks.many().multicast().directBestEffort());
         }
 
-        userNotificationConnections.get(userId).add(replaySink);
+        Sinks.Many<BaseEvent> replaySink = userNotificationConnections.get(userId);
 
         return events.switchMap(
                 event -> {
                     if(event == NotificationChannelEvent.OPENED) {
                         return replaySink.asFlux()
                                 .doOnError(e -> {
-                                   removeSink(userId, replaySink);
+                                   removeSink(userId);
                                 });
                     }
 
-                    removeSink(userId, replaySink);
+                    removeSink(userId);
 
                     return Mono.empty();
                 }
         );
     }
 
-    private void removeSink(UUID userId, Sinks.Many<BaseEvent> replaySink) {
-        Set<Sinks.Many<BaseEvent>> userConnections = userNotificationConnections.get(userId);
+    private void removeSink(UUID userId) {
+        Sinks.Many<BaseEvent> replaySink = userNotificationConnections.get(userId);
 
-        userConnections.remove(replaySink);
-
-        replaySink.tryEmitComplete();
-
-        if(userConnections.isEmpty()) {
+        if(replaySink.currentSubscriberCount() == 0) {
             userNotificationConnections.remove(userId);
+
+            replaySink.tryEmitComplete();
         }
 
         LOGGER.info("Connection removed for user {}.", userId);
@@ -65,12 +61,10 @@ public class NotificationService {
         if(event instanceof UserEvent) {
             UUID userId = ((UserEvent) event).getUserId();
 
-            Set<Sinks.Many<BaseEvent>> notificationConnections = userNotificationConnections.get(userId);
+            Sinks.Many<BaseEvent> replaySink = userNotificationConnections.get(userId);
 
-            if(notificationConnections != null) {
-                notificationConnections.forEach(sink -> {
-                    sink.tryEmitNext(event);
-                });
+            if(replaySink != null) {
+                replaySink.tryEmitNext(event);
             }
         }
     }
