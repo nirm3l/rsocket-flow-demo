@@ -52,9 +52,12 @@ public class NotificationService {
             userNotificationConnections.remove(userId);
 
             replaySink.tryEmitComplete();
+
+            LOGGER.info("Connection removed for user {}.", userId);
         }
 
-        LOGGER.info("Connection removed for user {}.", userId);
+        LOGGER.info("Connection removed for user {} but there are still {} connections opened.",
+                userId, replaySink.currentSubscriberCount());
     }
 
     public void handleEvent(BaseEvent event) {
