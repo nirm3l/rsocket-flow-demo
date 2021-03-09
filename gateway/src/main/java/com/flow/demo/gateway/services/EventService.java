@@ -23,7 +23,7 @@ public class EventService {
     }
 
     public Flux<ServerSentEvent<BaseEvent>> subscribeEvents(UUID userId) {
-        Sinks.Many<NotificationChannelEvent> replaySink = Sinks.many().replay().all();
+        Sinks.Many<NotificationChannelEvent> replaySink = Sinks.many().unicast().onBackpressureBuffer();
 
         replaySink.tryEmitNext(NotificationChannelEvent.OPENED);
 

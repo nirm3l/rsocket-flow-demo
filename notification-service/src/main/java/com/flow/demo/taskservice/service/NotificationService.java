@@ -23,7 +23,7 @@ public class NotificationService {
     public Flux<BaseEvent> handleNotifications(UUID userId, Flux<NotificationChannelEvent> events) {
         LOGGER.info("Connection added for user {}.", userId);
 
-        Sinks.Many<BaseEvent> replaySink = Sinks.many().replay().all();
+        Sinks.Many<BaseEvent> replaySink = Sinks.many().unicast().onBackpressureBuffer();
 
         if (!userNotificationConnections.containsKey(userId)) {
             userNotificationConnections.put(userId, new HashSet<>());
